@@ -10,7 +10,8 @@ End Sub
 
 ' The screensaver entry point.
 Sub RunScreenSaver()
-   json = fetch_JSON("http://www.cutecaptions.com/roku-api.php")
+   api_url = "http://www.cutecaptions.com/roku-api.php"
+   json = fetch_JSON(api_url)
 
    maxWidth = 400
    maxHeight = null
