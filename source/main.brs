@@ -31,100 +31,82 @@ Sub RunScreenSaver()
    canvas.SetRequireAllImagesToDraw(false)
 
    while(true)
+      for each img in json
+      
+        width = int(img.width)
+        height = int(img.height)
 
+        ' calculate the image x axis so we can center it
 
+        if (displayMode = "480i") then
+          captionY = int(screenHeight) - 75
+          maxHeight = 370
+          
+          if (width > maxWidth)
+            diff =   width - maxWidth
+            percentToScale = abs(1-(diff/width)) 
+            print percentToScale
+            width = int(width * percentToScale)
+            height = int(height * percentToScale)
+          end if
+        else 
 
-    for each img in json
-  print img.title
+          captionY = int(screenHeight) - 125
+          maxHeight = int(screenHeight) - 185
 
-width = int(img.width)
-height = int(img.height)
+        end if
 
-    ' calculate the image x axis so we can center it
+        ' print displayMode
+        print di.GetDisplaySize()
 
-     if (displayMode = "480i") then
-        captionY = int(screenHeight) - 75
-        maxHeight = 370
-        
-        if (width > maxWidth)
-          diff =   width - maxWidth
-          percentToScale = abs(1-(diff/width)) 
+      'Make sure the image is not too tall
+      if (height > maxHeight)
+          diff =   height - maxHeight
+          percentToScale = abs(1-(diff/height)) 
           print percentToScale
           width = int(width * percentToScale)
           height = int(height * percentToScale)
-        end if
-     else 
-
-        captionY = int(screenHeight) - 125
-        maxHeight = int(screenHeight) - 185
-
-     end if
-
-    ' print displayMode
-     print di.GetDisplaySize()
-
-    'always check for MaxHeight 
-    if (height > maxHeight)
-      diff =   height - maxHeight
-      percentToScale = abs(1-(diff/height)) 
-      print percentToScale
-      width = int(width * percentToScale)
-      height = int(height * percentToScale)
-    end if
+      end if
 
 
-xpos = (screenWidth / 2)  -  (width / 2)
-xpos = int(xpos)
+      xpos = (screenWidth / 2)  -  (width / 2)
+      xpos = int(xpos)
 
-ypos = (screenHeight / 2) - (height / 2)
-ypos = int(ypos - 30)
+      ypos = (screenHeight / 2) - (height / 2)
+      ypos = int(ypos - 30)
 
+      canvasItems = [
+          {   
+              url:img.url
+              TargetRect:{x:xpos,y:ypos,w:width,h:height}
 
+          },
+          { 
+              Text:img.title
+              TextAttrs:{Color:"#FFCCCCCC", Font:"Medium",
+              HAlign:"HCenter", VAlign:"VCenter",
+              Direction:"LeftToRight"}
+              ' TargetRect:{x:390,y:captionY,w:500,h:60}
+              TargetRect:{x:captionX,y:captionY,w:captionBoxWidth,h:60}
+          }
+      ] 
 
+     canvas.SetLayer(1, canvasItems)
+     canvas.Show() 
 
-print screenWidth
-print width
-print xpos
-
-
-    canvasItems = [
-        {   
-            url:img.url
-            TargetRect:{x:xpos,y:ypos,w:width,h:height}
-
-        },
-        { 
-            Text:img.title
-            TextAttrs:{Color:"#FFCCCCCC", Font:"Medium",
-            HAlign:"HCenter", VAlign:"VCenter",
-            Direction:"LeftToRight"}
-            ' TargetRect:{x:390,y:captionY,w:500,h:60}
-            TargetRect:{x:captionX,y:captionY,w:captionBoxWidth,h:60}
-        }
-    ] 
-
-
-   canvas.SetLayer(1, canvasItems)
-   canvas.Show() 
-
-
-
-
-       msg = wait(12000,port) 
-       if type(msg) = "roImageCanvasEvent" then
-           if (msg.isRemoteKeyPressed()) then
-               i = msg.GetIndex()
-               print "Key Pressed - " ; msg.GetIndex()
-               if (i = 2) then
-                   canvas.close()
-               end if
-           else if (msg.isScreenClosed()) then
-               print "Closed"
-               return
-           end if
-       end if
-
-
+         msg = wait(12000,port) 
+         if type(msg) = "roImageCanvasEvent" then
+             if (msg.isRemoteKeyPressed()) then
+                 i = msg.GetIndex()
+                 print "Key Pressed - " ; msg.GetIndex()
+                 if (i = 2) then
+                     canvas.close()
+                 end if
+             else if (msg.isScreenClosed()) then
+                 print "Closed"
+                 return
+             end if
+         end if
 
       end for
 
@@ -138,14 +120,14 @@ End Sub
 
 Function fetch_JSON(url as string) as Object
 
-print "fetching new JSON"
+    print "fetching new JSON"
 
-xfer=createobject("roURLTransfer")
-xfer.seturl(url)
-data=xfer.gettostring()
-json = ParseJSON(data)
+    xfer=createobject("roURLTransfer")
+    xfer.seturl(url)
+    data=xfer.gettostring()
+    json = ParseJSON(data)
 
-  return json
+    return json
 End Function
 
 
