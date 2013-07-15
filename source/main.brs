@@ -1,11 +1,10 @@
 ' Main() is useful for testing. It should be commented
 ' out before this is checked in.
-Sub Main()
- 
-   facade = CreateObject("roParagraphScreen")
-   facade.Show()
-   RunScreenSaver()
-End Sub
+' Sub Main()
+'   facade = CreateObject("roParagraphScreen")
+'   facade.Show()
+'   RunScreenSaver()
+' End Sub
 
 
 ' The screensaver entry point.
