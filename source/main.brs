@@ -97,13 +97,6 @@ Sub RunScreenSaver()
          msg = wait(12000,port) 
          if type(msg) = "roImageCanvasEvent" then
              if (msg.isRemoteKeyPressed()) then
-                 i = msg.GetIndex()
-                 print "Key Pressed - " ; msg.GetIndex()
-                 if (i = 2) then
-                     canvas.close()
-                 end if
-             else if (msg.isScreenClosed()) then
-                 print "Closed"
                  return
              end if
          end if
